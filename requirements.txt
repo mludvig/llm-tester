@@ -1,0 +1,9 @@
+python-dotenv
+
+
+langchain
+openai
+cohere
+ai21
+pygpt4all
+huggingface_hub

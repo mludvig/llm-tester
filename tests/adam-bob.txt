@@ -1,0 +1,2 @@
+First Adam and Bob had 2 apples each. Bob lost one and then gave one to Adam.
+How many apples did each of them have in the end?

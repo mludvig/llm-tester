@@ -1,0 +1,12 @@
+Given the email below answer this question: How do I record and submit timesheets in week 1 and in week 4?
+
+Here is the email:
+---
+Welcome to Week 1 at Xyz & partners!
+Timesheets at Xyz are updated daily and submitted every Friday.
+For this week only (May 1-May 5), you will continue to update your timesheet in the Old Portal.
+After 5 May timesheets are to be updated each day and submitted every Friday using the ESA timesheet application.
+Please note, you will not be able to use the ESA application until Friday, 5 May.
+What does this mean for you?
+Until Friday 5 May, you will need to continue to log all hours worked using the Old Portal.
+On Friday 5 May, you will need reflect all hours recorded in the Old Portal into Xyz's ESA timesheet application.
