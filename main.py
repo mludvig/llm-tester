@@ -71,8 +71,8 @@ def query(models, prompt, temperature=0.1, max_tokens=200):
         backend = list(filter(lambda b: b["name"] == model, backends))[0]
         print(f"=> Model: {backend['name']}")
         ts = time.time()
-        result, streaming = backend["query"](
-            prompt, temperature, max_tokens, streaming=True
+        result, streaming = backend["engine"](
+            backend["model"], prompt, temperature, max_tokens, streaming=True
         )
         if not streaming:
             print(result)
