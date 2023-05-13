@@ -1,9 +1,11 @@
 import os
 
-# set up openai, cohere, ai21, etc
-from langchain.llms import OpenAI, Cohere, AI21, HuggingFaceHub, GPT4All
+# Langchain imports
+from langchain import PromptTemplate, LLMChain
+from langchain.llms import OpenAI, Cohere, AI21, HuggingFaceHub, GPT4All, LlamaCpp
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
+from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 # as of now GPT4all doesn't work with langchain
@@ -71,7 +73,8 @@ def engine_gpt4all_langchain(model, prompt, temperature, max_tokens, streaming):
         model=f"{model_dir}/{model}",
         callbacks=callbacks,
         verbose=True,
-        temp=temperature)
+        temp=temperature,
+    )
     result = llm(prompt)
     return result, False
 
@@ -104,6 +107,26 @@ def engine_gpt4all_j(model, prompt, temperature, max_tokens, streaming):
     return result, streaming
 
 
+def engine_llama(model, prompt, temperature, max_tokens, streaming):
+    model_dir = os.getenv("GPT4ALL_MODEL_DIR")
+    model_name = f"{model_dir}/{model}"
+    callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+    llm = LlamaCpp(
+        model_path=model_name,
+        callback_manager=callback_manager,
+        verbose=True,
+        stop=["###"],
+        max_tokens=max_tokens,
+        temperature=temperature,
+    )
+
+    template = "question: {question}\nanswer: Let's think step by step. "
+    prompt_template = PromptTemplate(template=template, input_variables=["question"])
+    llm_chain = LLMChain(llm=llm, prompt=prompt_template)
+    result = llm_chain.run(question=prompt)
+    return result, streaming
+
+
 backends = [
     {
         "name": "davinci",
@@ -130,20 +153,29 @@ backends = [
         "engine": engine_ai21,
         "model": "j2-jumbo-instruct",
     },
-    # {"name": "hf", "query": query_hf},
+    {
+        "name": "hf",
+        "query": engine_hf,
+        "model": "EleutherAI/gpt-neo-2.7B",
+    },
     {
         "name": "vicuna",
-        "engine": engine_gpt4all_langchain,
+        "engine": engine_llama,
         "model": "ggml-vicuna-13b-1.1-q4_2.bin",
     },
     {
         "name": "stable-vicuna",
-        "engine": engine_gpt4all_j,
+        "engine": engine_llama,
         "model": "ggml-stable-vicuna-13B.q4_2.bin",
     },
     {
         "name": "snoozy",
-        "engine": engine_gpt4all,
+        "engine": engine_llama,
         "model": "ggml-gpt4all-l13b-snoozy.bin",
     },
+    # {
+    #     "name": "groovy",
+    #     "engine": engine_llama,
+    #     "model": "ggml-gpt4all-j-v1.3-groovy.bin",
+    # },
 ]
